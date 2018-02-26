@@ -100,7 +100,8 @@ int main(int argc, char** argv)
 	} else if (mode == 1) {
 		memcpy(packet->addr1, "\x00\x16\xea\x12\x34\x56", 6);
 		memcpy(packet->addr2, "\x00\x16\xea\x12\x34\x56", 6);
-		memcpy(packet->addr3, "\xff\xff\xff\xff\xff\xff", 6);
+		get_mac_address(packet->addr3, "mon0");
+		//memcpy(packet->addr3, "\xff\xff\xff\xff\xff\xff", 6);
 	}
 	packet->seq = 0;
 	tx_packet.packet = (uint8_t *)packet;
