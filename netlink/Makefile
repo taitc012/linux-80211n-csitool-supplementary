@@ -19,7 +19,7 @@ nl_bf_to_eff: nl_bf_to_eff.c bf_to_eff.o iwl_nl.o util.o q_approx.o
 
 log_to_file.c: iwl_connector.h
 
-log_to_server.c.c: iwl_connector.h
+log_to_server.c: iwl_connector.h
 
 iwl_nl.c: iwl_connector.h
 
