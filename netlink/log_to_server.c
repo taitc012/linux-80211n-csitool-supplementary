@@ -106,20 +106,25 @@ int main(int argc, char** argv)
 			exit_program_err(-1, "recv");
 		/* Pull out the message portion and print some stats */
 		cmsg = NLMSG_DATA(buf);
-		if (count % SLOW_MSG_CNT == 0)
-			printf("received %d bytes: id: %d val: %d seq: %d clen: %d\n", cmsg->len, cmsg->id.idx, cmsg->id.val, cmsg->seq, cmsg->len);
-		/* Send the data to server */
-		l = (unsigned short) cmsg->len;
-		l2 = htons(l);
+        // filter 00:16:ea:12:34:56
+        if( cmsg->data[0]==187 || ( cmsg->data[0]==193 && cmsg->data[5]==0 && cmsg->data[6]== 22 &&
+                    cmsg->data[7]== 234 && cmsg->data[8]== 18 && cmsg->data[9]== 52 && cmsg->data[10]== 86)){
 
-		if( write(sock_cli_fd, &l2, sizeof(unsigned short)) < 0)
-			exit_program_err(-1, "write");		
-		if (write(sock_cli_fd, cmsg->data, l) < 0)
-			exit_program_err(-1, "write");
+            if (count % SLOW_MSG_CNT == 0)
+                printf("received %d bytes: id: %d val: %d seq: %d clen: %d\n", cmsg->len, cmsg->id.idx, cmsg->id.val, cmsg->seq, cmsg->len);
+            /* Send the data to server */
+            l = (unsigned short) cmsg->len;
+            l2 = htons(l);
 
-		if (count % 100 == 0)
-			printf("wrote %d bytes [msgcnt=%u]\n", ret, count);
-		++count;
+            if( write(sock_cli_fd, &l2, sizeof(unsigned short)) < 0)
+                exit_program_err(-1, "write");		
+            if (write(sock_cli_fd, cmsg->data, l) < 0)
+                exit_program_err(-1, "write");
+
+            if (count % 100 == 0)
+                printf("wrote %d bytes [msgcnt=%u]\n", ret, count);
+            ++count;
+        }
 	}
 
 	exit_program(0);
